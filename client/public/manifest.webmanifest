@@ -1,0 +1,18 @@
+{
+  "name": "Campus Compass — Admin Portal",
+  "short_name": "Campus Compass",
+  "description": "Institutional Academic Record Intelligence and Analytics Portal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0E1120",
+  "theme_color": "#4F46E5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
