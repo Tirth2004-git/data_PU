@@ -39,12 +39,6 @@ export const Login = () => {
     }
   };
 
-  const handleFillDemo = () => {
-    setEmail('admin@campuscompass.edu');
-    setPassword('admin123');
-    setError('');
-  };
-
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 bg-slate-950 overflow-hidden selection:bg-indigo-500 selection:text-white">
       {/* Background ambient decorative glow */}
@@ -155,18 +149,6 @@ export const Login = () => {
               )}
             </button>
           </form>
-
-          {/* Quick Demo Credentials Autofill */}
-          <div className="mt-5 pt-4 border-t border-slate-800 text-center">
-            <button
-              type="button"
-              onClick={handleFillDemo}
-              className="text-xs text-indigo-400 hover:text-indigo-300 font-medium inline-flex items-center gap-1.5 transition-colors"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Autofill institutional demo credentials</span>
-            </button>
-          </div>
         </div>
 
         {/* Footer info */}

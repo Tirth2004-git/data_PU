@@ -4,7 +4,10 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const { connectDB } = require('./config/db');
+const siteRoutes = require('./routes/siteRoutes');
+const { requireSiteAccess } = require('./middleware/siteAccess');
 const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
@@ -42,15 +45,18 @@ app.use(
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-site-access-token', 'x-site-access'],
   })
 );
+
+// Cookie parser for httpOnly site access cookies
+app.use(cookieParser());
 
 // Body parsers
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health check endpoint
+// Health check endpoint (public)
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
@@ -60,7 +66,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes
+// Site Access Routes (public PIN verify & protected session check)
+app.use('/api/site', siteRoutes);
+
+// Enforce site-wide PIN access token ahead of all other /api routes
+app.use('/api', requireSiteAccess);
+
+// API Routes (Protected by both site access token and admin JWT)
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/analytics', analyticsRoutes);
@@ -113,4 +125,8 @@ const startServer = async () => {
   process.on('SIGTERM', shutdown);
 };
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = { app, startServer };

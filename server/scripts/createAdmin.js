@@ -76,25 +76,42 @@ const createAdmin = async () => {
       name = 'Campus Admin';
     }
 
-    // Check if admin already exists
-    const existingAdmin = await Admin.findOne({ email });
+    // Check if admin already exists or if an old admin account needs updating in place
     const saltRounds = 12;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    if (existingAdmin) {
+    const existingTargetAdmin = await Admin.findOne({ email });
+
+    if (existingTargetAdmin) {
       console.log(`ℹ️ Admin account for '${email}' already exists. Updating credentials...`);
-      existingAdmin.passwordHash = passwordHash;
-      existingAdmin.name = name;
-      await existingAdmin.save();
-      console.log(`✅ Admin password successfully updated for: ${email}`);
+      existingTargetAdmin.passwordHash = passwordHash;
+      existingTargetAdmin.name = name;
+      await existingTargetAdmin.save();
+      console.log(`✅ Admin account updated for: ${email}`);
     } else {
-      const newAdmin = new Admin({
-        email,
-        passwordHash,
-        name,
-      });
-      await newAdmin.save();
-      console.log(`✅ New Admin account successfully created for: ${email}`);
+      const anyOldAdmin = await Admin.findOne({});
+      if (anyOldAdmin) {
+        console.log(`ℹ️ Updating existing admin '${anyOldAdmin.email}' in place to '${email}'...`);
+        anyOldAdmin.email = email;
+        anyOldAdmin.name = name;
+        anyOldAdmin.passwordHash = passwordHash;
+        await anyOldAdmin.save();
+        console.log(`✅ Previous admin successfully updated in place to: ${email}`);
+      } else {
+        const newAdmin = new Admin({
+          email,
+          passwordHash,
+          name,
+        });
+        await newAdmin.save();
+        console.log(`✅ New Admin account successfully created for: ${email}`);
+      }
+    }
+
+    // Ensure no stale leftover admin accounts remain
+    const deletedCount = await Admin.deleteMany({ email: { $ne: email } });
+    if (deletedCount.deletedCount > 0) {
+      console.log(`🧹 Removed ${deletedCount.deletedCount} old admin account(s).`);
     }
 
     console.log('\nCredentials ready for login:');

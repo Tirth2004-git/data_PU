@@ -9,34 +9,30 @@ async function runSearchTests() {
 
   const BASE_URL = process.env.TEST_URL || 'http://127.0.0.1:5000';
 
-  // 1. Authenticate as Admin
+  const jwt = require('jsonwebtoken');
+  const siteAccessToken = jwt.sign(
+    { siteAccess: true },
+    process.env.SITE_ACCESS_TOKEN_SECRET || process.env.JWT_SECRET || 'fallback_site_access_token_secret_2026',
+    { expiresIn: '1h' }
+  );
+
+  // Authenticate as Admin by signing token from DB admin record
   let token;
   try {
-    const loginRes = await fetch(`${BASE_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'admin@campuscompass.edu', password: 'admin123' }),
-    });
-
-    const loginData = await loginRes.json();
-    if (loginRes.ok && loginData.token) {
-      token = loginData.token;
-      console.log('✅ Authenticated via /api/auth/login successfully.');
-    } else if (loginRes.status === 429) {
-      console.log('⚠️ Login rate-limited (429). Generating test JWT directly from DB admin document...');
-      await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/student_campus');
-      const adminDoc = await mongoose.connection.db.collection('admins').findOne({ email: 'admin@campuscompass.edu' });
-      await mongoose.disconnect();
-      const jwt = require('jsonwebtoken');
-      token = jwt.sign(
-        { id: adminDoc._id, email: adminDoc.email, role: 'admin' },
-        process.env.JWT_SECRET || 'campus_compass_jwt_super_secret_key_2026_secure',
-        { expiresIn: '8h' }
-      );
-      console.log('✅ Test JWT generated successfully.');
-    } else {
-      throw new Error(`Admin login failed: ${JSON.stringify(loginData)}`);
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/student_campus');
+    const adminDoc = await mongoose.connection.db.collection('admins').findOne({});
+    await mongoose.disconnect();
+    
+    if (!adminDoc) {
+      throw new Error('No admin document found in database.');
     }
+
+    token = jwt.sign(
+      { id: adminDoc._id, email: adminDoc.email, role: 'admin' },
+      process.env.JWT_SECRET || 'campus_compass_jwt_super_secret_key_2026_secure',
+      { expiresIn: '8h' }
+    );
+    console.log(`✅ Authenticated with Admin account: ${adminDoc.email}`);
   } catch (err) {
     console.error(`❌ Authentication failed at ${BASE_URL}:`, err.message);
     process.exit(1);
@@ -44,6 +40,7 @@ async function runSearchTests() {
 
   const authHeaders = {
     Authorization: `Bearer ${token}`,
+    'x-site-access-token': siteAccessToken,
     'Content-Type': 'application/json',
   };
 

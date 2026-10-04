@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Layout from './components/layout/Layout';
+import PinGate from './components/PinGate';
 
 // Code-split pages by route
 const Login = lazy(() => import('./pages/Login'));
@@ -35,8 +36,9 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <AuthProvider>
-          <BrowserRouter>
+        <PinGate>
+          <AuthProvider>
+            <BrowserRouter>
             <Suspense fallback={<RouteLoader />}>
               <Routes>
                 {/* Public Route: Login */}
@@ -72,8 +74,9 @@ export function App() {
             </Suspense>
           </BrowserRouter>
         </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+      </PinGate>
+    </ThemeProvider>
+  </QueryClientProvider>
   );
 }
 

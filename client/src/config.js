@@ -42,6 +42,8 @@ export const config = {
   storageKeys: {
     authToken: 'campus_compass_auth_token',
     adminUser: 'campus_compass_admin_user',
+    siteAccess: 'campus_compass_site_access',
+    pinLockUntil: 'campus_compass_pin_lock_until',
     theme: 'campus_compass_theme',
     recentSearches: 'campus_compass_recent_searches',
   },

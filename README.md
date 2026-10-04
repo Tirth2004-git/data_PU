@@ -210,11 +210,17 @@ To test Campus Compass on your mobile device (iPhone / Android) over your local 
 
 ---
 
-## 🔒 Default Admin Credentials
+## 🔒 Admin Access & Site Security Gate
 
-- **Email**: `admin@campuscompass.edu`
-- **Password**: `admin123`
-*(A convenient one-click "Autofill demo credentials" button is also present on the login screen).*
+1. **Site-Wide PIN Gate**: Run the interactive PIN setup script to hash your 8-digit PIN into `.env`:
+   ```bash
+   node server/scripts/setSitePin.js
+   ```
+2. **Admin Credentials**: Initialize or update the institutional super admin credentials:
+   ```bash
+   node server/scripts/createAdmin.js
+   ```
+*(All credentials are encrypted with bcrypt and stored exclusively in the git-ignored `.env` or MongoDB. Plaintext secrets are never stored or logged).*
 
 ## ☁️ Deploy to Render
 
