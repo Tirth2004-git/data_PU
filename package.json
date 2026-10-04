@@ -1,0 +1,16 @@
+{
+  "name": "campus-compass",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Campus Compass Portal - Monorepo Root",
+  "scripts": {
+    "build": "npm install --prefix server && npm install --prefix client && npm run build --prefix client",
+    "start": "npm start --prefix server",
+    "seed:admin": "npm run seed:admin --prefix server",
+    "seed:import-csv": "npm run seed:import-csv --prefix server",
+    "normalize": "npm run normalize --prefix server"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -229,13 +229,14 @@ This repository includes `render.yaml` for a single Render Web Service. The serv
    npm run seed:admin --prefix server -- --email superadmin@gmail.com --password admin@123 --name "Super Admin"
    ```
 
-5. Import the bundled student data from the Render Shell after setting `MONGODB_URI`:
+5. Import the local student CSV into the same MongoDB Atlas database from your computer. The CSV is intentionally excluded from GitHub because it contains student data. In PowerShell, run this from the project root with your Atlas connection string:
 
    ```bash
+   $env:MONGODB_URI="mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/campus_compass?retryWrites=true&w=majority"
    npm run seed:import-csv --prefix server
    ```
 
-   If the imported data needs normalization, run `node server/scripts/normalize.js` from the repository root in the shell.
+   If the imported data needs normalization, run `npm run normalize --prefix server` with the same `MONGODB_URI` set.
 
 6. Check `https://YOUR-SERVICE.onrender.com/api/health`, then open the same URL in a browser and sign in with the administrator created above.
 
