@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Shield, Lock, AlertTriangle, Clock, ArrowRight, Sun, Moon, CheckCircle2 } from 'lucide-react';
+import { Shield, Lock, AlertTriangle, Clock, ArrowRight, Sun, Moon, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { config } from '../config';
 import { useTheme } from '../context/ThemeContext';
 
@@ -11,6 +11,7 @@ export const PinGate = ({ children }) => {
 
   // 8-digit PIN state
   const [pinDigits, setPinDigits] = useState(['', '', '', '', '', '', '', '']);
+  const [showPin, setShowPin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [attemptsRemaining, setAttemptsRemaining] = useState(null);
@@ -334,9 +335,30 @@ export const PinGate = ({ children }) => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                  Enter 8-Digit Access PIN
-                </label>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                    Enter 8-Digit Access PIN
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPin((prev) => !prev)}
+                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-xs font-medium text-slate-400 hover:text-indigo-400 hover:bg-slate-800/80 transition-all border border-slate-700/50"
+                    title={showPin ? 'Hide PIN' : 'Show PIN'}
+                    aria-label={showPin ? 'Hide PIN' : 'Show PIN'}
+                  >
+                    {showPin ? (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span className="text-[11px]">Hide</span>
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span className="text-[11px]">Show</span>
+                      </>
+                    )}
+                  </button>
+                </div>
                 {attemptsRemaining !== null && !isLocked && (
                   <span className="text-[11px] font-medium text-amber-400">
                     Attempts remaining: {attemptsRemaining}
@@ -350,7 +372,7 @@ export const PinGate = ({ children }) => {
                   <input
                     key={idx}
                     ref={(el) => (inputRefs.current[idx] = el)}
-                    type="password"
+                    type={showPin ? 'text' : 'password'}
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength={1}
