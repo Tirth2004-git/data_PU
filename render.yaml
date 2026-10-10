@@ -15,5 +15,11 @@ services:
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: 8h
+      - key: SITE_PIN_HASH
+        sync: false
+      - key: SITE_ACCESS_TOKEN_SECRET
+        generateValue: true
+      - key: ALERT_EMAIL_TO
+        sync: false
       - key: CLIENT_URL
         value: https://campus-compass-portal.onrender.com

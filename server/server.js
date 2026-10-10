@@ -36,6 +36,7 @@ app.use(
       if (
         !origin ||
         origin === CLIENT_URL ||
+        origin.endsWith('.onrender.com') ||
         origin === 'http://localhost:5173' ||
         origin === 'http://127.0.0.1:5173'
       ) {
@@ -130,3 +131,4 @@ if (require.main === module) {
 }
 
 module.exports = { app, startServer };
+// Server initialized

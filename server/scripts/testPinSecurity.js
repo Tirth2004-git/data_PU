@@ -124,7 +124,7 @@ const runTests = async () => {
 
     console.log('🧪 TEST 4: Direct API access to /api/students without site access token returns 401...');
     // Create a dummy valid admin token to prove admin JWT ALONE is not enough
-    const dummyAdmin = await Admin.findOne({ email: 'ozatirth52@gmail.com' });
+    const dummyAdmin = await Admin.findOne({});
     if (!dummyAdmin) throw new Error('Admin not found in DB');
     const adminJwt = jwt.sign(
       { id: dummyAdmin._id, email: dummyAdmin.email, role: 'admin' },
@@ -184,7 +184,7 @@ const runTests = async () => {
           method: 'POST',
           headers: { 'x-site-access-token': siteToken },
           body: {
-            email: 'ozatirth52@gmail.com',
+            email: dummyAdmin.email,
             password: testPassword,
           },
         });

@@ -232,7 +232,7 @@ This repository includes `render.yaml` for a single Render Web Service. The serv
 4. After the first deploy, open the Render Shell and create the requested administrator:
 
    ```bash
-   npm run seed:admin --prefix server -- --email superadmin@gmail.com --password admin@123 --name "Super Admin"
+   npm run seed:admin --prefix server -- --email admin@example.com --password YourSecurePassword123 --name "Super Admin"
    ```
 
 5. Import the local student CSV into the same MongoDB Atlas database from your computer. The CSV is intentionally excluded from GitHub because it contains student data. In PowerShell, run this from the project root with your Atlas connection string:

@@ -56,10 +56,10 @@ const checkHourWindow = async () => {
  * Send consolidated hourly summary if alert volume exceeded threshold
  */
 const sendHourlySummary = async () => {
-  const recipient = process.env.ALERT_EMAIL_TO || 'ozatirth52@gmail.com';
+  const recipient = process.env.ALERT_EMAIL_TO;
   const transporter = createTransporter();
 
-  if (!transporter || summaryQueue.length === 0) {
+  if (!recipient || !transporter || summaryQueue.length === 0) {
     summaryQueue.length = 0;
     return;
   }
@@ -112,7 +112,10 @@ const sendPinAlert = async ({ ip, attemptsSoFar, locked, userAgent = 'Unknown' }
   try {
     await checkHourWindow();
 
-    const recipient = process.env.ALERT_EMAIL_TO || 'ozatirth52@gmail.com';
+    const recipient = process.env.ALERT_EMAIL_TO;
+    if (!recipient) {
+      return;
+    }
     const timestampIST = formatIST();
 
     const subject = locked

@@ -11,7 +11,7 @@ setup('authenticate', async ({ page }) => {
   }
 
   await page.goto('/login', { waitUntil: 'domcontentloaded' });
-  await page.fill('input[type="email"]', process.env.ADMIN_EMAIL || 'ozatirth52@gmail.com');
+  await page.fill('input[type="email"]', process.env.ADMIN_EMAIL || 'admin@campuscompass.edu');
   await page.fill('input[type="password"]', process.env.ADMIN_PASSWORD || '');
   await page.click('button[type="submit"]');
 

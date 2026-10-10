@@ -77,7 +77,7 @@ const run = async () => {
     }
 
     if (!/^ALERT_EMAIL_TO=/m.test(existingEnv)) {
-      updates.ALERT_EMAIL_TO = 'ozatirth52@gmail.com';
+      updates.ALERT_EMAIL_TO = '';
     }
 
     if (!/^ALERT_EMAIL_FROM=/m.test(existingEnv)) {
